@@ -3,7 +3,6 @@ package gomail
 import (
 	"bytes"
 	"io"
-	"os"
 	"path/filepath"
 	"time"
 )
@@ -283,20 +282,22 @@ func SetCopyFunc(f func(io.Writer) error) FileSetting {
 	}
 }
 
-func (m *Message) appendFile(list []*file, name string, settings []FileSetting) []*file {
+func (m *Message) appendFile(list []*file, name string, content []byte, settings []FileSetting) []*file {
 	f := &file{
 		Name:   filepath.Base(name),
 		Header: make(map[string][]string),
 		CopyFunc: func(w io.Writer) error {
-			h, err := os.Open(name)
-			if err != nil {
-				return err
-			}
-			if _, err := io.Copy(w, h); err != nil {
-				h.Close()
-				return err
-			}
-			return h.Close()
+			//h, err := os.Open(name)
+			//if err != nil {
+			//	return err
+			//}
+			//if _, err := io.Copy(w, h); err != nil {
+			//	h.Close()
+			//	return err
+			//}
+			//return h.Close()
+			_, err := w.Write(content)
+			return err
 		},
 	}
 
@@ -312,9 +313,21 @@ func (m *Message) appendFile(list []*file, name string, settings []FileSetting) 
 }
 
 // Attach attaches the files to the email.
-func (m *Message) Attach(filename string, settings ...FileSetting) {
-	m.attachments = m.appendFile(m.attachments, filename, settings)
+func (m *Message) Attach(filename string, content []byte, settings ...FileSetting) {
+	m.attachments = m.appendFile(m.attachments, filename, content, settings)
 }
+
+// Attach data to the e-mail as if it is a file
+//func (m *Message) AttachDirect(name string, content []byte, attachment_headers map[string][]string) {
+//	m.Attach(
+//		name,
+//		SetCopyFunc(func(w io.Writer) error {
+//			_, err := w.Write(content)
+//			return err
+//		}),
+//		SetHeader(attachment_headers),
+//	)
+//}
 
 // Embed embeds the images to the email.
 func (m *Message) Embed(filename string, settings ...FileSetting) {
