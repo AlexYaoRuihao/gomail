@@ -329,6 +329,6 @@ func (m *Message) Attach(filename string, content []byte, settings ...FileSettin
 //}
 
 // Embed embeds the images to the email.
-func (m *Message) Embed(filename string, settings ...FileSetting) {
-	m.embedded = m.appendFile(m.embedded, filename, settings)
-}
+//func (m *Message) Embed(filename string, settings ...FileSetting) {
+//	m.embedded = m.appendFile(m.embedded, filename, settings)
+//}
