@@ -3,7 +3,6 @@ package gomail
 import (
 	"bytes"
 	"io"
-	"path/filepath"
 	"time"
 )
 
@@ -284,7 +283,7 @@ func SetCopyFunc(f func(io.Writer) error) FileSetting {
 
 func (m *Message) appendFile(list []*file, name string, content []byte, settings []FileSetting) []*file {
 	f := &file{
-		Name:   filepath.Base(name),
+		Name:   name,
 		Header: make(map[string][]string),
 		CopyFunc: func(w io.Writer) error {
 			//h, err := os.Open(name)
